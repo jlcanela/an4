@@ -1,17 +1,17 @@
-var radarModule = angular.module('radar', ['ui.bootstrap']);
+var servicesModule = angular.module('services', ['ngResource']);
 
-radarModule.controller('RadarController',
-  function($scope) {
+servicesModule.factory('Radar', ['$resource', function($resource) {
+  return $resource('/api/radar', {}, {
+          'query': {method: 'GET', isArray: true}
+      });
+}]);
 
-    var stars = [
-    { name: 'center', x: 0, y: 0, defense: 5, pop: 1, size: 1, color: 'red'},
-    { name: 'top', x: 0, y: -20, defense: 1, pop: 2, size: 2, color: 'yellow'},
-    { name: 'bottom', x: 0, y: 20, defense: 2, pop: 4, size: 3, color: 'blue'},
-    { name: 'left', x: -20, y: 0, defense: 3, pop: 8, size: 4, color: 'black'},
-    { name: 'right', x: 20, y: 0, defense: 4, pop: 200, size: 10, color: 'pink'},
-    { name: 'canopi', x: 2, y: 0, defense: 4, pop: 3, size: 10, color: 'green'},
-    { name: 'extrem', x: 100, y: 0, defense: 4, pop: 3, size: 10, color: 'maroon'}
-    ];
+var radarModule = angular.module('radar', ['ui.bootstrap', 'services']);
+
+radarModule.controller('RadarController', ['$scope', 'Radar',
+  function($scope, Radar) {
+
+    var stars = Radar.query();
 
     var zoomMinValue = 2;
 
@@ -95,7 +95,7 @@ radarModule.controller('RadarController',
       $scope.select(star);
     }
 
-  }
+  }]
 );
 
 var app = angular.module('app', ['radar']);
