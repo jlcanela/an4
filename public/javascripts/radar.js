@@ -21,7 +21,9 @@ radarModule.controller('RadarController', ['$scope', 'Radar',
 
     var defaultCenterY = 215;
 
-    $scope.commander = { name: 'Arshaan' };
+    var maxPathLengthSqr = 50;
+
+    $scope.commander = { name: 'Anonymous' };
     $scope.radar = {
       sizeX: 450,
       sizeY: 460,
@@ -36,7 +38,8 @@ radarModule.controller('RadarController', ['$scope', 'Radar',
       r: 20,
       displayText: true,
       stars: stars,
-      selected: stars[0]
+      selected: stars[0],
+      target: stars[0]
     };
 
     $scope.updateZoom = function() {
@@ -85,14 +88,20 @@ radarModule.controller('RadarController', ['$scope', 'Radar',
       $scope.updateZoom();
     }
 
-    $scope.select = function(star) {
-      $scope.radar.selected = star;
+    $scope.target = function(star) {
+      var dx = star.x - $scope.radar.selected.x
+      var dy = star.y - $scope.radar.selected.y
+
+      if ((dx * dx + dy * dy) < maxPathLengthSqr ) {
+        $scope.radar.targeted = star;
+      }
     }
 
-    $scope.selectAndCenter = function(star) {
+    $scope.select = function(star) {
       $scope.radar.centerX = defaultCenterX - star.x * $scope.radar.zoom ;
       $scope.radar.centerY = defaultCenterY - star.y * $scope.radar.zoom - $scope.radar.offsetY;
-      $scope.select(star);
+      $scope.radar.target = null;
+      $scope.radar.selected = star;
     }
 
   }]

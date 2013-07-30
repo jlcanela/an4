@@ -18,7 +18,7 @@ object Application extends Controller {
 { "name": "left", "x":  -20, "y":  0, "defense": 3, "pop": 8, "size": 4, "color": "black"},
 { "name": "right", "x":  20, "y":  0, "defense": 4, "pop": 200, "size": 10, "color": "pink"},
 { "name": "canopi", "x":  2, "y":  0, "defense": 4, "pop": 3, "size": 10, "color": "green"},
-{ "name": "extrem", "x":  100, "y":  0, "defense": 4, "pop": 3, "size": 10, "color": "maroon"}]"""
+{ "name": "extrem", "x":  50, "y":  0, "defense": 4, "pop": 3, "size": 10, "color": "maroon"}]"""
 
     Ok(Json.parse(json))
   }

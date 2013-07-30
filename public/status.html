@@ -30,9 +30,16 @@
                 <rect width="{{radar.sizeX}}" height="{{radar.sizeY}}"
                       style="fill:rgb(230,230,230);stroke-width:1;stroke:rgb(0,0,0)"/>
                 <circle cx="{{radar.centerX + radar.selected.x * radar.zoom}}" cy="{{radar.centerY + radar.selected.y * radar.zoom + radar.offsetY}}" r="{{radar.zoom}}" stroke="black" stroke-width="1" fill-opacity="0.1" />
+                <circle cx="{{radar.centerX + radar.selected.x * radar.zoom}}" cy="{{radar.centerY + radar.selected.y * radar.zoom + radar.offsetY}}" r="{{radar.zoom * 7.07}}" stroke="yellow" stroke-width="0.5" fill-opacity="0.1" />
+                <circle cx="{{radar.centerX + radar.targeted.x * radar.zoom}}" cy="{{radar.centerY + radar.targeted.y * radar.zoom + radar.offsetY}}" r="{{radar.zoom}}" stroke="red" stroke-width="0.5" fill-opacity="0.1" />
+                <line x1="{{radar.centerX + radar.selected.x * radar.zoom}}"
+                      y1="{{radar.centerY + radar.selected.y * radar.zoom + radar.offsetY}}" r="{{radar.zoom}}"
+                      x2="{{radar.centerX + radar.targeted.x * radar.zoom}}"
+                      y2="{{radar.centerY + radar.targeted.y * radar.zoom + radar.offsetY}}"
+                      style="stroke:rgb(255,0,0);stroke-width:2"/>
                 <g ng-repeat="star in radar.stars">
-                    <use x="{{radar.centerX + star.x * radar.zoom}}" y="{{radar.centerY + star.y * radar.zoom + radar.offsetY}}" fill="{{star.color}}" xlink:href="#star" ng-click="select(star)" ng-dblclick="selectAndCenter(star)"/>
-                    <text ng-show='radar.displayText' x="{{radar.centerX + radar.offsetDefenseX * radar.zoom / 10 + star.x * radar.zoom}}" y="{{radar.centerY + radar.offsetDefenseY * radar.zoom / 10 + star.y * radar.zoom + radar.offsetY}}" fill="{{star.color}}" ng-click="select(star)" ng-dblclick="selectAndCenter(star)">{{star.defense}}</text>
+                    <use x="{{radar.centerX + star.x * radar.zoom}}" y="{{radar.centerY + star.y * radar.zoom + radar.offsetY}}" fill="{{star.color}}" xlink:href="#star" ng-click="target(star)" ng-dblclick="select(star)"/>
+                    <text ng-show='radar.displayText' x="{{radar.centerX + radar.offsetDefenseX * radar.zoom / 10 + star.x * radar.zoom}}" y="{{radar.centerY + radar.offsetDefenseY * radar.zoom / 10 + star.y * radar.zoom + radar.offsetY}}" fill="{{star.color}}" ng-click="target(star)" ng-dblclick="select(star)">{{star.defense}}</text>
                 </g>
             </svg>
             <div>
@@ -54,12 +61,12 @@
                 <tr><th>Name</th><th>X</th><th>Y</th><th>Defense</th><th>pop</th></tr>
                 </thead>
                 <tbody>
-                <tr ng-repeat="star in radar.stars" ng-click="select(star)" ng-dblclick="selectAndCenter(star)">
-                    <td ng-class="{selected: star.name == radar.selected.name}">{{star.name}}</td>
-                    <td ng-class="{selected: star.name == radar.selected.name}">{{star.x}}</td>
-                    <td ng-class="{selected: star.name == radar.selected.name}">{{star.y}}</td>
-                    <td ng-class="{selected: star.name == radar.selected.name}">{{star.defense}}</td>
-                    <td ng-class="{selected: star.name == radar.selected.name}">{{star.pop}}</td>
+                <tr ng-repeat="star in radar.stars" ng-click="target(star)" ng-dblclick="select(star)">
+                    <td ng-class="{selected: star.name == radar.selected.name, targeted: star.name == radar.targeted.name}">{{star.name}}</td>
+                    <td ng-class="{selected: star.name == radar.selected.name, targeted: star.name == radar.targeted.name}">{{star.x}}</td>
+                    <td ng-class="{selected: star.name == radar.selected.name, targeted: star.name == radar.targeted.name}">{{star.y}}</td>
+                    <td ng-class="{selected: star.name == radar.selected.name, targeted: star.name == radar.targeted.name}">{{star.defense}}</td>
+                    <td ng-class="{selected: star.name == radar.selected.name, targeted: star.name == radar.targeted.name}">{{star.pop}}</td>
 
                 </tr>
                 </tbody>
