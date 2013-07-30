@@ -100,7 +100,7 @@ radarModule.controller('RadarController', ['$scope', 'Radar',
     $scope.select = function(star) {
       $scope.radar.centerX = defaultCenterX - star.x * $scope.radar.zoom ;
       $scope.radar.centerY = defaultCenterY - star.y * $scope.radar.zoom - $scope.radar.offsetY;
-      $scope.radar.target = null;
+      $scope.radar.targeted = star;
       $scope.radar.selected = star;
     }
 
