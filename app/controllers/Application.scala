@@ -4,11 +4,14 @@ import play.api._
 import play.api.mvc._
 import play.api.libs.json.Json
 
-case class Star(name: String, x: Int, y: Int, defense: Int, pop: Int)
+case class Star(name: String, x: Int, y: Int, defense: Int, pop: Int, commander: String, color: String)
 
 case class Commander(name: String, color: String)
 
 trait StarGenerator {
+
+  val EMPIRE = "Empire"
+  val ANONYMOUS = "Anonymous"
 
   val random = new scala.util.Random()
 
@@ -47,9 +50,24 @@ trait StarGenerator {
       genName,
       x,
       y,
-      random.nextInt(3),
-      random.nextInt(3)
+      random.nextInt(3) + 1,
+      random.nextInt(3) + 1,
+      EMPIRE,
+      "black"
     )
+  }
+
+  def genStars = {
+    val res = genStar.copy(commander = ANONYMOUS, color = "green") :: List.fill(499)(genStar)
+    names = Set.empty
+    coords = Set.empty
+    res
+  }
+
+  def distance(s1: Star, s2: Star) = {
+    val dx = s1.x - s2.x
+    val dy = s1.y - s2.y
+    dx * dx + dy * dy
   }
 
 }
@@ -63,20 +81,13 @@ object Application extends Controller with StarGenerator {
 
     import play.api.libs.json._
 
-    val stars = List.fill(500)(genStar)
     implicit val personFormat = Json.format[Star]
+    val stars = genStars
 
- /*   val json = """[{ "name": "center", "x": 0, "y": 0, "defense": 5, "pop": 1, "size": 1, "color": "red"},
-{ "name": "top", "x":  0, "y":  -20, "defense": 1, "pop": 2, "size": 2, "color": "yellow"},
-{ "name": "bottom", "x":  0, "y":  20, "defense": 2, "pop": 4, "size": 3, "color": "blue"},
-{ "name": "left", "x":  -20, "y":  0, "defense": 3, "pop": 8, "size": 4, "color": "black"},
-{ "name": "right", "x":  20, "y":  0, "defense": 4, "pop": 200, "size": 10, "color": "pink"},
-{ "name": "canopi", "x":  2, "y":  0, "defense": 4, "pop": 3, "size": 10, "color": "green"},
-{ "name": "extrem", "x":  50, "y":  0, "defense": 4, "pop": 3, "size": 10, "color": "maroon"}]"""
-      */
+    val owned = stars.filter(_.commander == ANONYMOUS)
+    val neighborhood = stars.filter(n => n.commander != ANONYMOUS && owned.exists(o => distance(o, n) < 50))
 
-    Ok(Json.toJson(stars))
-    //Ok(Json.parse(json))
+    Ok(Json.toJson(neighborhood ::: owned))
   }
 
 }

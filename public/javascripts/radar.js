@@ -24,6 +24,14 @@ radarModule.controller('RadarController', ['$scope', 'Radar',
     var maxPathLengthSqr = 50;
 
     $scope.commander = { name: 'Anonymous' };
+
+
+    function owned(element, index, array) {
+      return (element.commander == $scope.commander.name);
+    }
+
+    var owneds = stars.filter(owned);
+
     $scope.radar = {
       sizeX: 450,
       sizeY: 460,
@@ -38,8 +46,8 @@ radarModule.controller('RadarController', ['$scope', 'Radar',
       r: 20,
       displayText: true,
       stars: stars,
-      selected: stars[0],
-      target: stars[0]
+      selected: owneds[0],
+      target: owneds[0]
     };
 
     $scope.updateZoom = function() {
