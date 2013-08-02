@@ -81,7 +81,7 @@ object Application extends Controller with StarGenerator {
 
     import play.api.libs.json._
 
-    implicit val personFormat = Json.format[Star]
+    implicit val starFormat = Json.format[Star]
     val stars = genStars
 
     val owned = stars.filter(_.commander == ANONYMOUS)
