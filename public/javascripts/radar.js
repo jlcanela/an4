@@ -11,7 +11,13 @@ var radarModule = angular.module('radar', ['ui.bootstrap', 'services']);
 radarModule.controller('RadarController', ['$scope', 'Radar',
   function($scope, Radar) {
 
-    var stars = Radar.query();
+    function owned(element, index, array) {
+      return (element.commander == $scope.commander.name);
+    }
+
+    var stars = Radar.query(function(x) {
+      $scope.select(stars.filter(owned)[0]);
+    });
 
     var zoomMinValue = 2;
 
@@ -30,8 +36,6 @@ radarModule.controller('RadarController', ['$scope', 'Radar',
       return (element.commander == $scope.commander.name);
     }
 
-    var owneds = stars.filter(owned);
-
     $scope.radar = {
       sizeX: 450,
       sizeY: 460,
@@ -45,9 +49,7 @@ radarModule.controller('RadarController', ['$scope', 'Radar',
       zoom: 10,
       r: 20,
       displayText: true,
-      stars: stars,
-      selected: owneds[0],
-      target: owneds[0]
+      stars: stars
     };
 
     $scope.updateZoom = function() {
