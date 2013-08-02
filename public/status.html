@@ -55,6 +55,14 @@
         </div>
 
         <div>
+            <h3>Status</h3>
+
+            <div ng-show="lootActive()">Loot star '{{radar.selected.name}}' : <button class="btn" ng-click="loot(radar.selected)">Loot</button></div>
+            <div ng-show="developActive()">Develop star '{{radar.selected.name}}' : <button class="btn" ng-click="develop(radar.selected)">Develop</button></div>
+            <div ng-show="attackActive()">Attack star '{{radar.selected.name}}' : <button class="btn" ng-click="zoomP()">Loot</button></div>
+
+
+
             <h3>Stars <i class="icon-star-empty"></i></h3>
 
             <p>Here you can get more details about all the stars you can see in the radar.</p>

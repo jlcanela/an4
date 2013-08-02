@@ -114,6 +114,24 @@ radarModule.controller('RadarController', ['$scope', 'Radar',
       $scope.radar.selected = star;
     }
 
+    $scope.lootActive = function() {
+      return owned($scope.radar.selected, 0, []) && ($scope.radar.selected.pop > 0);
+    }
+
+    $scope.loot = function(star) {
+      star.pop = star.pop - 1;
+      star.defense = star.defense + 3;
+    }
+
+    $scope.developActive = function() {
+      return owned($scope.radar.selected, 0, []) && ($scope.radar.selected.defense > 2);
+    }
+
+    $scope.develop = function(star) {
+      star.pop = star.pop + 1;
+      star.defense = star.defense - 3;
+    }
+
   }]
 );
 
