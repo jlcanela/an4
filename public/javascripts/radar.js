@@ -114,8 +114,8 @@ radarModule.controller('RadarController', ['$scope', 'Radar',
       $scope.radar.selected = star;
     }
 
-    $scope.lootActive = function() {
-      return owned($scope.radar.selected, 0, []) && ($scope.radar.selected.pop > 0);
+    $scope.lootActive = function(star) {
+      return owned(star, 0, []) && (star.pop > 0);
     }
 
     $scope.loot = function(star) {
@@ -123,13 +123,23 @@ radarModule.controller('RadarController', ['$scope', 'Radar',
       star.defense = star.defense + 3;
     }
 
-    $scope.developActive = function() {
-      return owned($scope.radar.selected, 0, []) && ($scope.radar.selected.defense > 2);
+    $scope.developActive = function(star) {
+      return owned(star, 0, []) && (star.defense > 2);
     }
 
     $scope.develop = function(star) {
       star.pop = star.pop + 1;
       star.defense = star.defense - 3;
+    }
+
+    $scope.attackActive = function(star) {
+      return owned($scope.radar.selected, 0, [])
+        && ($scope.radar.selected.defense > 0)
+        && (owned(star, 0, []) == false);
+    }
+
+    $scope.attack = function(star) {
+
     }
 
   }]
