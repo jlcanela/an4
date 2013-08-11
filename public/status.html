@@ -25,23 +25,44 @@
 
             <p>The radar displays all your stars and the visible stars from your kingdom.</p>
 
-            <svg xmlns="http://www.w3.org/2000/svg" version="1.1" height="{{radar.sizeY}}px" width="{{radar.sizeX}}px">
-                <path id="star" transform="scale({{radar.zoom}},{{radar.zoom}})" d="M 0 -1 L 0.588 0.809 -0.951 -0.309 0.951 -0.309 -0.588 0.809 Z"/>
+            <svg xmlns="http://www.w3.org/2000/svg" version="1.1" ng-height="{{u.radar.height()}}px" ng-width="{{u.radar.width()}}px" id="radarsvg">
+                <path id="star" transform="scale({{u.star.scaleX()}},{{u.star.scaleY()}})" d="M 0 -1 L 0.588 0.809 -0.951 -0.309 0.951 -0.309 -0.588 0.809 Z"/>
+                <path id="arrow" viewBox="0 0 10 10" refX=27 refY=5 markerUnits="strokeWidth" markerWidth=8 markerHeight=6 orient="auto" d="M 0 0 L 10 5 L 0 10 z"/>
                 </defs>
-                <rect width="{{radar.sizeX}}" height="{{radar.sizeY}}"
+                <rect ng-width="{{radar.sizeX}}" ng-height="{{radar.sizeY}}"
                       style="fill:rgb(230,230,230);stroke-width:1;stroke:rgb(0,0,0)"/>
-                <circle cx="{{radar.centerX + radar.selected.x * radar.zoom}}" cy="{{radar.centerY + radar.selected.y * radar.zoom + radar.offsetY}}" r="{{radar.zoom}}" stroke="black" stroke-width="1" fill-opacity="0.1" />
-                <circle cx="{{radar.centerX + radar.selected.x * radar.zoom}}" cy="{{radar.centerY + radar.selected.y * radar.zoom + radar.offsetY}}" r="{{radar.zoom * 7.07}}" stroke="yellow" stroke-width="0.5" fill-opacity="0.1" />
-                <circle cx="{{radar.centerX + radar.targeted.x * radar.zoom}}" cy="{{radar.centerY + radar.targeted.y * radar.zoom + radar.offsetY}}" r="{{radar.zoom}}" stroke="red" stroke-width="0.5" fill-opacity="0.1" />
-                <line x1="{{radar.centerX + radar.selected.x * radar.zoom}}"
-                      y1="{{radar.centerY + radar.selected.y * radar.zoom + radar.offsetY}}" r="{{radar.zoom}}"
-                      x2="{{radar.centerX + radar.targeted.x * radar.zoom}}"
-                      y2="{{radar.centerY + radar.targeted.y * radar.zoom + radar.offsetY}}"
-                      style="stroke:rgb(255,0,0);stroke-width:2"/>
+                
+                <!-- selected star -->
+                <circle ng-show="radar.selected" ng-cx="{{u.selectedStar.cx()}}" ng-cy="{{u.selectedStar.cy()}}" ng-r="{{radar.zoom}}" stroke="green" stroke-width="1" fill-opacity="0.1"  ignore="{{radar.selected}}"/>
+
+                <circle ng-show="u.selectedStar.isOwned()" ng-cx="{{u.selectedStar.cx()}}" ng-cy="{{u.selectedStar.cy()}}" ng-r="{{radar.zoom * 7.07}}" stroke="green" stroke-width="0.5" fill-opacity="0.1" fill="green"/>
+
+                <!-- targetted star -->
+                <circle ng-show="false" ng-cx="{{radar.centerX + radar.targeted.x * radar.zoom}}" ng-cy="{{radar.centerY + radar.targeted.y * radar.zoom + radar.offsetY}}" ng-r="{{radar.zoom}}" stroke="red" stroke-width="0.5" fill-opacity="0.1" />
+                <line ng-show="radar.targeted"
+                      x1="{{u.selectedStar.cx()}}"
+                      y1="{{u.selectedStar.cy()}}"
+                      r="{{radar.zoom}}"
+                      x2="{{u.targetedStar.cx()}}"
+                      y2="{{u.targetedStar.cy()}}"
+                      style="stroke:rgb(255,0,0);stroke-width:2"
+                      marker-end="url(\#arrow)"
+                />
+
+                <!-- all stars -->
                 <g ng-repeat="star in radar.stars">
-                    <use x="{{radar.centerX + star.x * radar.zoom}}" y="{{radar.centerY + star.y * radar.zoom + radar.offsetY}}" fill="{{star.color}}" xlink:href="#star" ng-click="target(star)" ng-dblclick="select(star)"/>
-                    <text ng-show='radar.displayText' x="{{radar.centerX + radar.offsetDefenseX * radar.zoom / 10 + star.x * radar.zoom}}" y="{{radar.centerY + radar.offsetDefenseY * radar.zoom / 10 + star.y * radar.zoom + radar.offsetY}}" fill="{{star.color}}" ng-click="target(star)" ng-dblclick="select(star)">{{star.defense}}</text>
+                    <use
+                            ng-x="{{u.cx(star)}}"
+                            ng-y="{{u.cy(star)}}"
+                            ng-fill="{{star.color}}"
+                            xlink:href="#star"
+                            ng-click="target(star)"
+                            ng-dblclick="select(star)"
+                            />
+                    <text ng-show='radar.displayText' ng-x="{{u.cx(star) + radar.offsetDefenseX * radar.zoom / 20}}" ng-y="{{u.cy(star) + radar.offsetDefenseY * radar.zoom / 20}}" ng-fill="{{star.color}}" ng-click="target(star)" ng-dblclick="select(star)">{{star.defense}}</text>
+                    />
                 </g>
+
             </svg>
             <div>
                 <button ng-click="scrollUp()"><i class="icon-circle-arrow-up icon-4x"></i></button>
@@ -55,8 +76,6 @@
         </div>
 
         <div>
-            <h3>Status</h3>
-
             <h3>Stars <i class="icon-star-empty"></i></h3>
 
             <p>Here you can get more details about all the stars you can see in the radar.</p>
@@ -79,7 +98,6 @@
                     </td>
                 </tr>
                 </tbody>
-
             </table>
 
         </div>

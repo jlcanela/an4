@@ -11,8 +11,32 @@ var radarModule = angular.module('radar', ['ui.bootstrap', 'services']);
 radarModule.controller('RadarController', ['$scope', 'Radar',
   function($scope, Radar) {
 
+    function isStarOwned(star) {
+      if (star) {
+        return (star.commander == $scope.commander.name);
+      } else {
+        return false;
+      }
+    }
+
     function owned(element, index, array) {
-      return (element.commander == $scope.commander.name);
+      return isStarOwned(element);
+    }
+
+    function cx(star) {
+      if (star) {
+        return $scope.radar.centerX + star.x * $scope.radar.zoom;
+      } else {
+        return 0;
+      }
+    }
+
+    function cy(star) {
+      if (star) {
+        return $scope.radar.centerY + star.y * $scope.radar.zoom + $scope.radar.offsetY;
+      } else {
+        return 0;
+      }
     }
 
     var stars = Radar.query(function(x) {
@@ -31,11 +55,6 @@ radarModule.controller('RadarController', ['$scope', 'Radar',
 
     $scope.commander = { name: 'Anonymous' };
 
-
-    function owned(element, index, array) {
-      return (element.commander == $scope.commander.name);
-    }
-
     $scope.radar = {
       sizeX: 450,
       sizeY: 460,
@@ -46,11 +65,61 @@ radarModule.controller('RadarController', ['$scope', 'Radar',
       offsetNameY: 20,
       offsetDefenseX: 5,
       offsetDefenseY: -5,
-      zoom: 10,
+      zoom: 20,
       r: 20,
       displayText: true,
-      stars: stars
+      stars: stars,
     };
+
+    $scope.u = {
+      cx: cx,
+      cy: cy,
+      radar : {
+        width : function() {
+          return $scope.radar.sizeX;
+        },
+        height : function() {
+          return $scope.radar.sizeY;
+        } 
+      },
+      star: {
+        scaleX: function() {
+          return $scope.radar.zoom/1.5;
+        },
+        scaleY: function() {
+          return $scope.radar.zoom/1.5;
+        }
+      },
+      selectedStar: {
+        isOwned: function() {
+          return isStarOwned($scope.radar.selected);
+        },
+        show: function() {
+          if ($scope.radar.selected)  {
+            $scope.radar.selected.governor == $scope.commander.name;  
+          } else {
+            true;
+          }
+        },
+        cx: function() {  
+          return cx($scope.radar.selected);
+        },
+        cy: function() {
+          return cy($scope.radar.selected);
+        }
+      }, 
+      targetedStar: {
+        isOwned: function() {
+          return isStarOwned($scope.radar.targeted);
+        },
+        cx: function() {  
+          return cx($scope.radar.targeted);
+        },
+        cy: function() {
+          return cy($scope.radar.targeted);
+        }
+      }
+    }
 
     $scope.updateZoom = function() {
       if ($scope.radar.zoom > 5) {
@@ -110,7 +179,7 @@ radarModule.controller('RadarController', ['$scope', 'Radar',
     $scope.select = function(star) {
       $scope.radar.centerX = defaultCenterX - star.x * $scope.radar.zoom ;
       $scope.radar.centerY = defaultCenterY - star.y * $scope.radar.zoom - $scope.radar.offsetY;
-      $scope.radar.targeted = star;
+      //$scope.radar.targeted = star;
       $scope.radar.selected = star;
     }
 
@@ -146,3 +215,31 @@ radarModule.controller('RadarController', ['$scope', 'Radar',
 );
 
 var app = angular.module('app', ['radar']);
+
+angular.forEach([ 'x1', 'y1', 'x', 'y', 'cx', 'cy', 'r', 'width', 'height', 'fill'], function(name) {
+  var ngName = 'ng' + name[0].toUpperCase() + name.slice(1);
+  app.directive(ngName, function() {
+    return function(scope, element, attrs) {
+      attrs.$observe(ngName, function(value) {
+        attrs.$set(name, value);
+      })
+    };
+  });
+});
+
+function ShowTooltip(evt, mouseovertext, star) {
+    var tooltip = document.getElementById('ctooltip');
+    var svg = document.getElementById('radarsvg');
+    var rect = svg.getBoundingClientRect();
+
+    console.log(star.tgt);
+    tooltip.setAttribute("x", evt.clientX + 11 - rect.left);
+    tooltip.setAttribute("y", evt.clientY + 27 - rect.top);
+    tooltip.firstChild.data = mouseovertext;
+    tooltip.setAttribute("visibility", "visible");
+}
+
+function HideTooltip(evt) {
+    var tooltip = document.getElementById('ctooltip');
+    tooltip.setAttribute("visibility", "hidden");
+}
