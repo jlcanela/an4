@@ -74,6 +74,7 @@ radarModule.controller('RadarController', ['$scope', 'Radar',
     $scope.u = {
       cx: cx,
       cy: cy,
+      isStarOwned: isStarOwned,
       radar : {
         width : function() {
           return $scope.radar.sizeX;
@@ -130,19 +131,19 @@ radarModule.controller('RadarController', ['$scope', 'Radar',
     }
 
     $scope.scrollUp = function() {
-      $scope.radar.centerY =  $scope.radar.centerY - 1;
+      $scope.radar.centerY =  $scope.radar.centerY - 10;
     }
 
     $scope.scrollDown = function() {
-      $scope.radar.centerY =  $scope.radar.centerY + 1;
+      $scope.radar.centerY =  $scope.radar.centerY + 10;
     }
 
     $scope.scrollLeft = function() {
-      $scope.radar.centerX =  $scope.radar.centerX - 1;
+      $scope.radar.centerX =  $scope.radar.centerX - 10;
     }
 
     $scope.scrollRight = function() {
-      $scope.radar.centerX =  $scope.radar.centerX + 1;
+      $scope.radar.centerX =  $scope.radar.centerX + 10;
     }
 
     $scope.zoomMinValue = 3;
@@ -167,19 +168,18 @@ radarModule.controller('RadarController', ['$scope', 'Radar',
       $scope.updateZoom();
     }
 
-    $scope.target = function(star) {
-      var dx = star.x - $scope.radar.selected.x
-      var dy = star.y - $scope.radar.selected.y
-
-      if ((dx * dx + dy * dy) < maxPathLengthSqr ) {
-        $scope.radar.targeted = star;
+    $scope.toggleTarget = function(star) {
+      if ($scope.radar.targeted == star) {
+          $scope.radar.targeted = null;
+      } else {
+          $scope.radar.targeted = star;  
       }
     }
 
     $scope.select = function(star) {
       $scope.radar.centerX = defaultCenterX - star.x * $scope.radar.zoom ;
       $scope.radar.centerY = defaultCenterY - star.y * $scope.radar.zoom - $scope.radar.offsetY;
-      //$scope.radar.targeted = star;
+      $scope.radar.targeted = star;
       $scope.radar.selected = star;
     }
 

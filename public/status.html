@@ -20,7 +20,7 @@
     <h2><strong>Welcome Commander {{commander.name}}</strong></h2>
 
     <div>
-        <div style="width:65%;float:right;">
+        <div style="width:65%;">
             <h3>Radar <i class="icon-compass"></i></h3>
 
             <p>The radar displays all your stars and the visible stars from your kingdom.</p>
@@ -32,13 +32,16 @@
                 <rect ng-width="{{radar.sizeX}}" ng-height="{{radar.sizeY}}"
                       style="fill:rgb(230,230,230);stroke-width:1;stroke:rgb(0,0,0)"/>
                 
+                <!-- control zones -->
+                <circle ng-repeat="star in radar.stars" ng-show="u.isStarOwned(star)" ng-cx="{{u.cx(star)}}" ng-cy="{{u.cy(star)}}" ng-r="{{radar.zoom * 7.07}}" fill="rgb(230,239,230)"/>
+
                 <!-- selected star -->
                 <circle ng-show="radar.selected" ng-cx="{{u.selectedStar.cx()}}" ng-cy="{{u.selectedStar.cy()}}" ng-r="{{radar.zoom}}" stroke="green" stroke-width="1" fill-opacity="0.1"  ignore="{{radar.selected}}"/>
 
-                <circle ng-show="u.selectedStar.isOwned()" ng-cx="{{u.selectedStar.cx()}}" ng-cy="{{u.selectedStar.cy()}}" ng-r="{{radar.zoom * 7.07}}" stroke="green" stroke-width="0.5" fill-opacity="0.1" fill="green"/>
 
-                <!-- targetted star -->
-                <circle ng-show="false" ng-cx="{{radar.centerX + radar.targeted.x * radar.zoom}}" ng-cy="{{radar.centerY + radar.targeted.y * radar.zoom + radar.offsetY}}" ng-r="{{radar.zoom}}" stroke="red" stroke-width="0.5" fill-opacity="0.1" />
+                <!-- targeted star -->
+                <circle ng-show="false" ng-cx="{{radar.centerX + radar.targeted.x * radar.zoom}}" ng-cy="{{radar.centerY + radar.targeted.y * radar.zoom + radar.offsetY}}" ng-r="{{radar.zoom + 10 }}" stroke="red" stroke-width="0.5" fill-opacity="0.1" />
+
                 <line ng-show="radar.targeted"
                       x1="{{u.selectedStar.cx()}}"
                       y1="{{u.selectedStar.cy()}}"
@@ -49,19 +52,29 @@
                       marker-end="url(\#arrow)"
                 />
 
-                <!-- all stars -->
+
                 <g ng-repeat="star in radar.stars">
                     <use
                             ng-x="{{u.cx(star)}}"
                             ng-y="{{u.cy(star)}}"
                             ng-fill="{{star.color}}"
                             xlink:href="#star"
-                            ng-click="target(star)"
+                            ng-click="toggleTarget(star)"
                             ng-dblclick="select(star)"
                             />
-                    <text ng-show='radar.displayText' ng-x="{{u.cx(star) + radar.offsetDefenseX * radar.zoom / 20}}" ng-y="{{u.cy(star) + radar.offsetDefenseY * radar.zoom / 20}}" ng-fill="{{star.color}}" ng-click="target(star)" ng-dblclick="select(star)">{{star.defense}}</text>
+                    <text ng-show='radar.displayText' ng-x="{{u.cx(star) + radar.offsetDefenseX * radar.zoom / 20}}" ng-y="{{u.cy(star) + radar.offsetDefenseY * radar.zoom / 20}}" ng-fill="{{star.color}}" ng-click="toggleTarget(star)" ng-dblclick="select(star)">{{star.defense}}</text>
                     />
                 </g>
+
+                <rect ng-show="radar.targeted" ng-width="{{100}}" ng-height="{{100}}"
+                      fill="green" stroke-width="1" stroke:"black"/>
+                <text ng-show="radar.targeted" ng-x="5" ng-y="20" ng-fill="yellow">{{radar.targeted.commander}}</text>
+                <text ng-show="radar.targeted" ng-x="5" ng-y="40" ng-fill="yellow">Name: {{radar.targeted.name}}</text>
+                <text ng-show="radar.targeted" ng-x="5" ng-y="60" ng-fill="yellow">Defense: {{radar.targeted.defense}}</text>
+                <text ng-show="radar.targeted" ng-x="5" ng-y="80" ng-fill="yellow">Pop:{{radar.targeted.pop}}</text>
+
+
+
 
             </svg>
             <div>
@@ -75,7 +88,7 @@
             </div>
         </div>
 
-        <div>
+<!--    <div>
             <h3>Stars <i class="icon-star-empty"></i></h3>
 
             <p>Here you can get more details about all the stars you can see in the radar.</p>
@@ -85,8 +98,8 @@
                 <tr><th>T</th><th>Name</th><th>Defense</th><th>Pop</th><th>Owner</th><th>Action</th></tr>
                 </thead>
                 <tbody>
-                <tr ng-repeat="star in radar.stars" ng-click="target(star)" ng-dblclick="select(star)">
-                    <td><span ng-show="star.name == radar.targeted.name">X</span></td>
+                <tr ng-repeat="star in radar.stars" ng-click="toggleTarget(star)" ng-dblclick="select(star)">
+                    <td><span ng-show="star.name == radar.toggleTargeted.name">X</span></td>
                     <td ng-class="{selected: star.name == radar.selected.name}">{{star.name}}</td>
                     <td ng-class="{selected: star.name == radar.selected.name}">{{star.defense}}</td>
                     <td ng-class="{selected: star.name == radar.selected.name}">{{star.pop}}</td>
@@ -100,7 +113,7 @@
                 </tbody>
             </table>
 
-        </div>
+        </div> -->
 
     </div>
     <div style="clear:both"/>
