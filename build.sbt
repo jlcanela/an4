@@ -1,6 +1,6 @@
-organization := "com.example"
+organization := "org.ansoft"
 
-name := "An4b"
+name := "An4"
 
 version := "0.1.0"
 
