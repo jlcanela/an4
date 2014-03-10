@@ -1,0 +1,148 @@
+<!doctype html>
+<html>
+<head>
+    <link href="/css/main.css" rel="stylesheet">
+    <link rel='stylesheet' href='css/bootstrap.css'>
+    <link rel='stylesheet' href='css/font-awesome.css'>
+</head>
+
+<body>
+
+<script type='text/javascript' src='/js/libs/jquery.js'></script>
+<script type='text/javascript' src='/js/libs/handlebars.js'></script>
+<script type='text/javascript' src='/js/libs/ember.js'></script>
+<script type='text/javascript' src='/js/libs/ember-data.js'></script>
+<script type='text/javascript' src='/js/libs/ember-simple-auth.js'></script>
+<script type='text/javascript' src='/js/libs/snap.svg.js'></script>
+<script type='text/javascript' src='/js/libs/flash-message.js'></script>
+
+<script type="text/x-handlebars" id="application">
+<div class="container">
+    <div class="row clearfix">
+        <div class="col-md-12 column">
+            <h1 tooltip="test">The Fourth Anomaly (Reboot)</h1>
+            <p> The Fourth Anomaly (Reboot) is based on the game <a href="http://anomalie4.free.fr">Anomalie 4</a> and is a strategy - diplomacy game.</p>
+        </div>
+    </div>
+    {{ outlet }}
+</div>
+</script>
+
+<script type="text/x-handlebars" id="index">
+    <div class="row clearfix">
+        <div class="col-md-12 column">
+        {{#if session.isAuthenticated}}
+          <a {{ action 'logout' }}>Logout</a>
+        {{else}}
+          <a {{ action 'login' }}>Login</a><br/>
+          {{#link-to 'signup'}}Signup{{/link-to}}
+        {{/if}}
+        </div>
+        <div class="col-md-12 column">test0</div>
+        {{#flashMessage}}
+        <div class="col-md-12 column">testA
+        {{message}}
+        </div>
+        {{/flashMessage}}
+
+    </div>
+</script>
+
+<script type="text/x-handlebars" id="login">
+<form {{action login on='submit'}}>
+    <label for="identification">Login</label>
+    {{view Ember.TextField id='identification' valueBinding='identification' placeholder='Enter Login'}}
+    <label for="password">Password</label>
+    {{view Ember.TextField id='password' type='password' valueBinding='password' placeholder='Enter Password'}}
+    <button type="submit">Login</button>
+</form>
+</script>
+
+<script type="text/x-handlebars" id="signup">
+<form {{action signup on='submit'}}>
+    <label for="identification">Login</label>
+    {{view Ember.TextField id='identification' valueBinding='identification' placeholder='Enter Login'}}
+    <label for="email">Email</label>
+    {{view Ember.TextField id='email' valueBinding='email' placeholder='Enter Email'}}
+    <label for="password">Password</label>
+    {{view Ember.TextField id='password' type='password' valueBinding='password' placeholder='Enter Password'}}
+    <button type="submit">Signup</button>
+</form>
+</script>
+
+<script type="text/x-handlebars" id="stars">
+
+<div class="row clearfix">
+    <div class="col-md-8 column">
+        <ul class="nav nav-tabs">
+            <li class="active"><a href="#">Home</a></li>
+        </ul>
+    </div>
+    <div class="col-md-4 column">
+          <a {{ action 'logout' }}>Logout</a>
+    </div>
+</div>
+
+<div class="row clearfix">
+    <div class="col-md-12 column">
+        <h3>The home displays all your stars and the visible stars from your kingdom.</h3>
+    </div>
+</div>
+
+<div class="row clearfix">
+    <div class="col-md-6 column">
+        <div class="well well-sm">Let's attack other commanders to make your empire bigger. You can also develop your own stars.</div>
+
+        <table class="table">
+            <tr class="active"><th>name</th><th>shuttles</th><th>pop</th><th>Tech</th><th>Develop</th><th>Loot</th><th>Produce</th></tr>
+            {{#each controller}}
+            {{#if owned}}
+            <tr><td><a {{action 'selectStar' this }}>{{name}} ({{x}},{{y}})</a></td><td>{{shuttles}}</td><td>{{pop}}</td><td>{{tech}}</td><td><a {{action 'develop' this }}>Develop</a></td><td><a {{action 'loot' this }}>Loot</a><td><a {{action 'produce' this }}>Produce</a></td></td></tr>
+            {{/if}}
+        {{/each}}
+        </table>
+
+        {{#if controller.currentStar}}
+        <a {{action 'unselectStar' }}>unselect star <i class="fa fa-times-circle text-danger"></i></a>
+        {{else}}
+         <div class="well well-sm"><i class="fa fa-arrow-circle-up fa-2x"></i> Select a star of your kingdom</div>
+        {{/if}}
+        {{ outlet }}
+    </div>
+    <div class="col-md-6 column">{{view An4.RadarView}}</div>
+</div>
+
+</script>
+
+<script type="text/x-handlebars" id="radar">
+<div class="background">
+    <svg xmlns="http://www.w3.org/2000/svg" version="1.1" height="400px" width="100%" id="svgradar" >
+    </svg>
+</div>
+</script>
+
+<script type="text/x-handlebars" id="stars/star">
+<div class="well well-sm">
+Here are the stars visible from {{name}}:<br/>
+<table class="table">
+{{#each controller.localStars}}
+    <tr>
+        <td>{{name}} ({{x}},{{y}})</td>
+        <td>{{shuttles}}</td><td>{{pop}}</td><td>{{tech}}</td>
+        <td><a {{action 'attack' this }}>Attack</a></td>
+    </tr>
+{{/each}}
+</table>
+</div>
+</script>
+
+<script src="/config.js"></script>
+<script src="/js/app.js"></script>
+
+
+</body>
+</html>
+
+
+
+

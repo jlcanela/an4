@@ -1,0 +1,18 @@
+.selected .targeted {
+  background-color: yellow !important;
+}
+
+.selected {
+  background-color: lightgreen !important;
+}
+
+.targeted {
+  background-color: red !important;
+}
+
+.background{
+  background-color: #EEE;
+  /*background-image: */
+}
+
+

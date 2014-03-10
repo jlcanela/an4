@@ -1,8 +1,9 @@
-// Comment to get more information during initialization
-logLevel := Level.Warn
+resolvers += Classpaths.typesafeResolver
 
-// The Typesafe repository
-resolvers += "Typesafe repository" at "http://repo.typesafe.com/typesafe/releases/"
+addSbtPlugin("com.github.mpeltonen" % "sbt-idea" % "1.5.2")
 
-// Use the Play sbt plugin for Play projects
-addSbtPlugin("play" % "sbt-plugin" % "2.1.0")
+addSbtPlugin("com.typesafe.sbt" % "sbt-native-packager" % "0.6.4")
+
+addSbtPlugin("com.orrsella" % "sbt-sublime" % "1.0.9")
+
+addSbtPlugin("org.ensime" % "ensime-sbt-cmd" % "0.1.2")
